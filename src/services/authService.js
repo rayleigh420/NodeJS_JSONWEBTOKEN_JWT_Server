@@ -32,6 +32,45 @@ let handleSignUp = async (data) => {
     });
 };
 
+let handleSignIn = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let userData = {};
+            let check = await checkUserEmail(data.email);
+            if (check == true) {
+                let user = await User.findOne({
+                    email: data.email
+                });
+
+                if (user) {
+                    let check = await bcrypt.compare(data.password, user.password);
+
+                    if (check) {
+                        userData.status = 200;
+                        userData.mess = "Login Sucess";
+
+                        delete user.password;
+                        userData.user = user;
+                    } else {
+                        userData.status = 404;
+                        userData.mess = "Wrong password";
+                    }
+                } else {
+                    userData.status = 404;
+                    userData.mess = `User not found`;
+                }
+            } else {
+                userData.errCode = 404;
+                userData.mess = "Email is not exist";
+            }
+
+            resolve(userData);
+        } catch (e) {
+            console.log(e);
+        }
+    });
+};
+
 let checkUserEmail = async (email) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -61,6 +100,6 @@ let hashUserPassword = (password) => {
 };
 
 module.exports = {
-    handleSignUp, checkUserEmail
+    handleSignUp, handleSignIn
 }
 

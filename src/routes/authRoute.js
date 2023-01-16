@@ -5,7 +5,7 @@ let router = express.Router();
 
 const authRoute = (app) => {
     router.post('/signUp', authController.signUp)
-    // router.post('/signIn', )
+    router.post('/signIn', authController.signIn)
 
     return app.use("/", router);
 };
