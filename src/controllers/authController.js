@@ -4,8 +4,12 @@ const authController = {
     signUp: async (req, res) => {
         try {
             let userData = await authService.handleSignUp(req.body)
-            console.log(userData)
-            res.status(userData.status).json(userData.user)
+            if (userData == 202) {
+                res.status(userData.status).json(userData.user)
+            }
+            else {
+                res.status(userData.status).json(userData.mess)
+            }
         } catch (err) {
             res.status(500).json(err);
         }
