@@ -5,6 +5,12 @@ const authController = {
         try {
             let userData = await authService.handleSignUp(req.body)
             if (userData.status == 200) {
+                res.cookie("refreshToken", userData.user.refreshToken, {
+                    httpOnly: true,
+                    secure: false,
+                    path: "/",
+                    sameSite: "strict",
+                })
                 res.status(userData.status).json(userData.user)
             }
             else {
@@ -18,6 +24,12 @@ const authController = {
         try {
             let userData = await authService.handleSignIn(req.body)
             if (userData.status == 200) {
+                res.cookie("refreshToken", userData.user.refreshToken, {
+                    httpOnly: true,
+                    secure: false,
+                    path: "/",
+                    sameSite: "strict",
+                })
                 res.status(userData.status).json(userData.user)
             }
             else {
