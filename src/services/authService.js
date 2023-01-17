@@ -20,8 +20,23 @@ let handleSignUp = async (data) => {
 
                 const user = await newUser.save()
 
+                const accessToken = JWTService.generateJWTAccessToken({
+                    id: user.id,
+                    email: user.email,
+                    userName: user.userName,
+                    admin: user.admin
+                })
+
+                const refreshToken = JWTService.generateJWTRefreshToken({
+                    id: user.id,
+                    email: user.email,
+                    userName: user.userName,
+                    admin: user.admin
+                })
+
                 userData.status = 200
-                userData.user = user
+                const { password, ...others } = user._doc;
+                userData.user = { ...others, accessToken, refreshToken };
             } else {
                 userData.status = 404;
                 userData.mess = "Email is exist";
@@ -65,9 +80,8 @@ let handleSignIn = async (data) => {
                         userData.mess = "Login Sucess";
 
                         delete user.password;
-                        userData.user = user;
-                        userData.accessToken = accessToken;
-                        userData.refreshToken = refreshToken;
+                        const { password, ...others } = user._doc;
+                        userData.user = { ...others, accessToken, refreshToken };
                     } else {
                         userData.status = 404;
                         userData.mess = "Wrong password";
