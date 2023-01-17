@@ -1,4 +1,5 @@
 import authService from "../services/authService"
+import JWTService from "../services/JWTService"
 
 const authController = {
     signUp: async (req, res) => {
@@ -37,6 +38,30 @@ const authController = {
             }
         } catch (err) {
             res.status(500).json(err);
+        }
+    },
+    refresh: (req, res) => {
+        console.log("Hello")
+        const refreshToken = req.cookies.refreshToken;
+        if (refreshToken) {
+            let result = JWTService.refreshToken(refreshToken)
+            console.log(result)
+            if (result.status == 200) {
+                res.cookie("refreshToken", result.refreshToken, {
+                    httpOnly: true,
+                    secure: false,
+                    path: "/",
+                    sameSite: "strict",
+                })
+                res.status(result.status).json({ ...result.user, accessToken: result.accessToken, refreshToken: result.refreshToken })
+                res.json("Success")
+            }
+            else {
+                res.status(result.status).json(result.mess)
+            }
+        }
+        else {
+            res.status(401).json("You are not authenticated!");
         }
     }
 }
