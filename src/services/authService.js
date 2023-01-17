@@ -1,5 +1,6 @@
 import User from "../models/User";
 import bcrypt from "bcrypt"
+import JWTService from "./JWTService"
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -46,11 +47,27 @@ let handleSignIn = async (data) => {
                     let check = await bcrypt.compare(data.password, user.password);
 
                     if (check) {
+                        const accessToken = JWTService.generateJWTAccessToken({
+                            id: user.id,
+                            email: user.email,
+                            userName: user.userName,
+                            admin: user.admin
+                        })
+
+                        const refreshToken = JWTService.generateJWTRefreshToken({
+                            id: user.id,
+                            email: user.email,
+                            userName: user.userName,
+                            admin: user.admin
+                        })
+
                         userData.status = 200;
                         userData.mess = "Login Sucess";
 
                         delete user.password;
                         userData.user = user;
+                        userData.accessToken = accessToken;
+                        userData.refreshToken = refreshToken;
                     } else {
                         userData.status = 404;
                         userData.mess = "Wrong password";

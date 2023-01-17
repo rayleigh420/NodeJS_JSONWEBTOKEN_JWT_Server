@@ -18,7 +18,11 @@ const authController = {
         try {
             let userData = await authService.handleSignIn(req.body)
             if (userData.status == 200) {
-                res.status(userData.status).json(userData.user)
+                res.status(userData.status).json({
+                    user: userData.user,
+                    accessToken: userData.accessToken,
+                    refreshToken: userData.refreshToken
+                })
             }
             else {
                 res.status(userData.status).json(userData.mess)
