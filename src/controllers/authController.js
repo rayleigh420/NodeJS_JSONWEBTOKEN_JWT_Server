@@ -40,6 +40,10 @@ const authController = {
             res.status(500).json(err);
         }
     },
+    signOut: (req, res) => {
+        res.clearCookie("refreshToken")
+        res.status(200).json("Sign Out success")
+    },
     refresh: (req, res) => {
         console.log("Hello")
         const refreshToken = req.cookies.refreshToken;
