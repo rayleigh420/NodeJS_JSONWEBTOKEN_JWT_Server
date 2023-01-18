@@ -45,7 +45,7 @@ let refreshToken = (token) => {
         if (err) {
             result = {
                 status: 403,
-                mess: "Token is not valid!"
+                mess: err.name
             }
         }
         else {

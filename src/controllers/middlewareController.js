@@ -7,7 +7,7 @@ const middlewareController = {
             const accessToken = token.split(" ")[1];
             jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
                 if (err) {
-                    res.status(403).json("Token is not valid")
+                    res.status(403).json(err.name)
                 }
                 else {
                     req.user = user;
